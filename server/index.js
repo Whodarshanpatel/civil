@@ -98,15 +98,30 @@ const seedData = {
 // API Routes
 app.get('/api/portfolio', async (req, res) => {
   try {
-    if (mongoose.connection.readyState === 1) {
-        let data = await Portfolio.findOne();
-        if (!data) data = await Portfolio.create(seedData);
-        return res.json(data);
+    let portfolio = await Portfolio.findOne();
+    if (!portfolio) {
+      portfolio = new Portfolio(seedData);
+      await portfolio.save();
     }
-    // Fallback if no DB
-    res.json(seedData);
+    res.json(portfolio);
   } catch (err) {
-    res.json(seedData); // Fallback data
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
+
+app.get('/api/messages', async (req, res) => {
+  try {
+    // Check if MongoDB is connected
+    if (mongoose.connection.readyState === 1) {
+      const messages = await Contact.find().sort({ date: -1 }); // Assuming 'date' field for sorting
+      res.json(messages);
+    } else {
+      // Fallback to in-memory messages if DB not connected
+      res.json(messages.sort((a, b) => b.date.getTime() - a.date.getTime()));
+    }
+  } catch (err) {
+    console.error('Error fetching messages:', err);
+    res.status(500).json({ error: 'Failed to fetch messages' });
   }
 });
 

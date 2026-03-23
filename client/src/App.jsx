@@ -4,7 +4,7 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Menu, X, Phone, Mail, MapPin, Linkedin, ArrowRight, 
-  Construction, Ruler, DraftingCompass, Building2, HardHat, Lightbulb, Globe, CheckCircle2, Play, Quote
+  Construction, Ruler, DraftingCompass, Building2, HardHat, Lightbulb, Globe, CheckCircle2, Play, Quote, Trash2, Calendar, User, MessageCircle
 } from 'lucide-react';
 import './App.css';
 
@@ -43,7 +43,9 @@ const translations = {
     cont_title: "Let's",
     cont_em: 'Build Together',
     modal_close: 'Close Video',
-    modal_transcript: 'Video Transcript'
+    modal_transcript: 'Video Transcript',
+    admin_title: 'Message Center',
+    admin_subtitle: 'Inquiries from Portfolio'
   },
   hi: {
     nav_about: 'परिचय',
@@ -62,7 +64,7 @@ const translations = {
     section_testimonials: 'क्लाइंट रिव्यू',
     section_contact: 'जुड़ें',
     form_send: 'मैसेज भेजें',
-    form_sending: 'भेજ रहा है...',
+    form_sending: 'भेज रहा है...',
     form_success: 'मैसेज सफलतापूर्वक भेजा गया!',
     about_h2: 'संरचनात्मक इंजीनियरिंग के भविष्य का निर्माण',
     about_bio: 'संरचनात्मक डिजाइन, परियोजना प्रबंधन और साइट पर्यवेक्षण में मजबूत पृष्ठभूमि वाला अनुभवी सिविल इंजीनियर। मेरे पास टिकाऊ और कुशल संरचनाएं बनाने का जुनून है जो समय की कसौटी पर खरी उतरती हैं।',
@@ -77,7 +79,9 @@ const translations = {
     cont_title: 'आइए',
     cont_em: 'साथ मिलकर बनाएं',
     modal_close: 'वीडियो बंद करें',
-    modal_transcript: 'वीडियो ट्रांसक्रिप्ट'
+    modal_transcript: 'वीडियो ट्रांसक्रिप्ट',
+    admin_title: 'संदेश केंद्र',
+    admin_subtitle: 'पोर्टफोलियो से पूछताछ'
   },
   gu: {
     nav_about: 'પરિચય',
@@ -111,7 +115,9 @@ const translations = {
     cont_title: 'ચાલો',
     cont_em: 'સાથે મળીને બનાવીએ',
     modal_close: 'વિડિઓ બંધ કરો',
-    modal_transcript: 'વિડિઓ ટ્રાન્સક્રિપ્ટ'
+    modal_transcript: 'વિડિઓ ટ્રાન્સક્રિપ્ટ',
+    admin_title: 'સંદેશ કેન્દ્ર',
+    admin_subtitle: 'પોર્ટફોલિયો પૂછપરછ'
   }
 };
 
@@ -124,6 +130,10 @@ const App = () => {
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState({ loading: false, success: false, error: null });
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
+  const [showAdmin, setShowAdmin] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [adminAuth, setAdminAuth] = useState('');
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   const t = (key) => translations[lang][key] || key;
 
@@ -194,6 +204,33 @@ const App = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/messages`);
+      setMessages(response.data);
+    } catch (err) {
+      console.error('Error fetching messages');
+    }
+  };
+
+  const handleAdminToggle = () => {
+    if (!showAdmin) {
+      setAdminAuth('');
+      setIsAuthorized(false);
+    }
+    setShowAdmin(!showAdmin);
+  };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (adminAuth === 'admin123') { // Simple password for now
+      setIsAuthorized(true);
+      fetchMessages();
+    } else {
+      alert('Incorrect Password');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus({ loading: true, success: false, error: null });
@@ -242,7 +279,9 @@ const App = () => {
     <div className="portfolio">
       {/* ── NAVBAR ── */}
       <nav className={scrolled ? 'scrolled' : ''}>
-        <div className="nav-logo">Sanket<span>.</span>Valand</div>
+        <div className="nav-logo" onClick={handleAdminToggle} style={{ cursor: 'pointer' }}>
+          Sanket<span style={{ color: showAdmin ? 'var(--yellow)' : 'inherit' }}>.</span>Valand
+        </div>
         
         <div className="nav-controls">
            <div className="lang-switcher">
@@ -265,6 +304,65 @@ const App = () => {
           <a href="#contact" className="nav-cta">{t('nav_hire')}</a>
         </ul>
       </nav>
+
+      {/* ── ADMIN MODAL ── */}
+      <AnimatePresence>
+        {showAdmin && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="admin-overlay"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 30 }}
+              animate={{ scale: 1, y: 0 }}
+              className="admin-container"
+            >
+              <div className="admin-header">
+                <h2>{t('admin_title')} <span>{t('admin_subtitle')}</span></h2>
+                <button className="close-admin" onClick={() => setShowAdmin(false)}><X /></button>
+              </div>
+
+              {!isAuthorized ? (
+                <form className="admin-login" onSubmit={handleLogin}>
+                  <p>Secure Access Required</p>
+                  <input 
+                    type="password" 
+                    placeholder="Enter Admin Password" 
+                    value={adminAuth} 
+                    onChange={(e) => setAdminAuth(e.target.value)} 
+                    required 
+                  />
+                  <button type="submit" className="btn-primary">Login</button>
+                </form>
+              ) : (
+                <div className="admin-messages-list">
+                   {messages.length === 0 ? (
+                     <div className="no-messages">No messages yet.</div>
+                   ) : (
+                     messages.map((msg, i) => (
+                       <div key={i} className="message-card">
+                         <div className="msg-header">
+                            <div>
+                              <span className="msg-user"><User size={16} /> {msg.name}</span>
+                              <span className="msg-email"><Mail size={16} /> {msg.email}</span>
+                            </div>
+                            <span className="msg-date"><Calendar size={16} /> {new Date(msg.date || msg.createdAt).toLocaleDateString()}</span>
+                         </div>
+                         <div className="msg-body">
+                            <MessageCircle size={18} />
+                            <p>{msg.message}</p>
+                         </div>
+                       </div>
+                     ))
+                   )}
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── TESTIMONIAL MODAL ── */}
       <AnimatePresence>
