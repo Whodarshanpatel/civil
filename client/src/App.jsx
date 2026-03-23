@@ -6,6 +6,7 @@ import {
   Menu, X, Phone, Mail, MapPin, Linkedin, ArrowRight, 
   Construction, Ruler, DraftingCompass, Building2, HardHat, Lightbulb, Globe, CheckCircle2, Play, Quote, Trash2, Calendar, User, MessageCircle
 } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
 import './App.css';
 
 const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:5001/api';
@@ -608,6 +609,7 @@ const App = () => {
          <p>© {new Date().getFullYear()} Sanket Valand. All Rights Reserved.</p>
          <p>Created by <span>Civil Engineers</span> for India.</p>
       </footer>
+      <Analytics />
     </div>
   );
 };
