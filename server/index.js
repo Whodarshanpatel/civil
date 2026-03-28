@@ -45,7 +45,24 @@ const contactSchema = new mongoose.Schema({
   date: { type: Date, default: Date.now }
 });
 
+const workerSchema = new mongoose.Schema({
+  name: String,
+  role: String,
+  site: String,
+  status: { type: String, default: 'Active' },
+  phone: String
+});
+
+const projectSchema = new mongoose.Schema({
+  name: String,
+  location: String,
+  progress: { type: Number, default: 0 },
+  status: { type: String, default: 'Ongoing' }
+});
+
 const Contact = mongoose.model('Contact', contactSchema);
+const Worker = mongoose.model('Worker', workerSchema);
+const Project = mongoose.model('Project', projectSchema);
 
 // Initial Seed Data (Sanket Valand's data)
 const seedData = {
@@ -111,18 +128,61 @@ app.get('/api/portfolio', async (req, res) => {
 
 app.get('/api/messages', async (req, res) => {
   try {
-    // Check if MongoDB is connected
     if (mongoose.connection.readyState === 1) {
-      const messages = await Contact.find().sort({ date: -1 }); // Assuming 'date' field for sorting
+      const messages = await Contact.find().sort({ date: -1 });
       res.json(messages);
     } else {
-      // Fallback to in-memory messages if DB not connected
-      res.json(messages.sort((a, b) => b.date.getTime() - a.date.getTime()));
+      res.json([]);
     }
   } catch (err) {
-    console.error('Error fetching messages:', err);
     res.status(500).json({ error: 'Failed to fetch messages' });
   }
+});
+
+// Worker Endpoints
+app.get('/api/workers', async (req, res) => {
+  try {
+    const workers = await Worker.find();
+    res.json(workers);
+  } catch (err) { res.status(500).json({ error: 'Error fetching workers' }); }
+});
+
+app.post('/api/workers', async (req, res) => {
+  try {
+    const worker = new Worker(req.body);
+    await worker.save();
+    res.json(worker);
+  } catch (err) { res.status(500).json({ error: 'Error adding worker' }); }
+});
+
+app.delete('/api/workers/:id', async (req, res) => {
+  try {
+    await Worker.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ error: 'Error deleting worker' }); }
+});
+
+// Project Management Endpoints
+app.get('/api/projects-list', async (req, res) => {
+  try {
+    const projects = await Project.find();
+    res.json(projects);
+  } catch (err) { res.status(500).json({ error: 'Error fetching projects' }); }
+});
+
+app.post('/api/projects-list', async (req, res) => {
+  try {
+    const project = new Project(req.body);
+    await project.save();
+    res.json(project);
+  } catch (err) { res.status(500).json({ error: 'Error adding project' }); }
+});
+
+app.delete('/api/projects-list/:id', async (req, res) => {
+  try {
+    await Project.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ error: 'Error deleting project' }); }
 });
 
 app.post('/api/contact', async (req, res) => {

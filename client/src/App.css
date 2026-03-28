@@ -101,53 +101,116 @@
 }
 
 .admin-header {
-  padding: 2.5rem; background: var(--black); color: var(--white);
+  padding: 1.5rem 2.5rem; background: var(--black); color: var(--white);
   display: flex; align-items: center; justify-content: space-between;
+  gap: 2rem;
 }
-.admin-header h2 { font-family: 'Fredoka', sans-serif; font-size: 2rem; margin: 0; }
-.admin-header h2 span { font-size: 1rem; color: var(--yellow); margin-left: 1rem; font-weight: 500; }
+.admin-header h2 { font-family: 'Fredoka', sans-serif; font-size: 1.5rem; margin: 0; white-space: nowrap; line-height: 1.1; }
+.admin-header h2 span { font-size: 0.8rem; color: var(--yellow); margin-top: 0.3rem; display: block; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
 
-.close-admin { 
-  background: var(--yellow); border: none; padding: 0.8rem; border-radius: 50%;
-  cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center;
-}
-.close-admin:hover { transform: scale(1.1) rotate(90deg); }
-
-.admin-login {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 1.5rem; padding: 4rem;
-}
-.admin-login p { font-weight: 700; color: var(--black); text-transform: uppercase; letter-spacing: 2px; }
-.admin-login input {
-  width: 300px; padding: 1.2rem; border-radius: 15px; border: 3px solid var(--black);
-  font-size: 1.1rem; text-align: center;
-}
-
-.admin-messages-list {
-  flex: 1; padding: 2.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem;
-}
-
-.message-card {
-  background: var(--grey); padding: 2rem; border-radius: 25px; border: 2px solid var(--mid-grey);
+.close-admin {
+  background: #333;
+  border: none;
+  color: var(--white);
+  padding: 0.7rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: 0.3s;
 }
-.message-card:hover { border-color: var(--yellow); transform: translateX(10px); }
 
-.msg-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 1.5rem; border-bottom: 2px dashed var(--mid-grey); padding-bottom: 1rem;
+.close-admin:hover {
+  background: var(--yellow);
+  color: var(--black);
+  transform: rotate(90deg);
 }
-.msg-user { font-weight: 800; font-size: 1.1rem; color: var(--black); display: flex; align-items: center; gap: 0.5rem; margin-right: 2rem; }
-.msg-email { color: #666; font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem; }
-.msg-date { color: #999; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
 
-.msg-body { display: flex; gap: 1rem; color: #444; line-height: 1.6; font-size: 1.05rem; }
-.msg-body svg { color: var(--yellow-dark); flex-shrink: 0; margin-top: 4px; }
+.close-admin svg { width: 22px; height: 22px; }
 
-.no-messages {
-  height: 100%; display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem; color: #ccc; font-weight: 700;
+.admin-tabs { display: flex; gap: 0.5rem; background: #222; padding: 0.4rem; border-radius: 12px; }
+.admin-tabs button {
+  background: transparent; border: none; color: #888; padding: 0.6rem 1.2rem;
+  border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: 600;
+  display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;
 }
+.admin-tabs button.active { background: var(--yellow); color: var(--black); }
+.admin-tabs button:hover:not(.active) { color: var(--white); background: #333; }
+
+.admin-content-view { flex: 1; overflow-y: auto; background: var(--white); display: flex; flex-direction: column; }
+
+.admin-login {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 3rem;
+  background: var(--grey);
+  text-align: center;
+}
+
+.admin-login p {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 0.5rem;
+}
+
+.admin-login input {
+  padding: 1.2rem 2rem;
+  width: 100%;
+  max-width: 350px;
+  border-radius: 99px;
+  border: 4px solid var(--black);
+  font-family: inherit;
+  font-size: 1.1rem;
+  text-align: center;
+  box-shadow: 8px 8px 0 var(--black);
+  outline: none;
+  transition: 0.3s;
+}
+
+.admin-login input:focus {
+  border-color: var(--yellow);
+  transform: translateY(-2px);
+  box-shadow: 12px 12px 0 var(--black);
+}
+
+.admin-login .btn-primary {
+  width: 100%;
+  max-width: 350px;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  padding: 1.2rem;
+  cursor: pointer;
+}
+
+.admin-management { padding: 2.5rem; display: flex; flex-direction: column; gap: 3rem; }
+
+.add-form { background: var(--grey); padding: 2rem; border-radius: 25px; border: 2px solid var(--black); box-shadow: 6px 6px 0 var(--black); }
+.add-form h3 { font-family: 'Fredoka', sans-serif; margin-bottom: 1.5rem; font-size: 1.3rem; }
+.input-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) auto; gap: 1rem; align-items: center; }
+.input-group input { padding: 0.8rem 1rem; border-radius: 12px; border: 2px solid var(--mid-grey); font-size: 0.9rem; }
+.btn-add { background: var(--black); color: var(--white); border: none; padding: 0.8rem; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+.btn-add:hover { background: var(--yellow); color: var(--black); transform: scale(1.1); }
+
+.data-table { overflow-x: auto; }
+.data-table table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.data-table th { text-align: left; padding: 1.2rem 1rem; border-bottom: 3px solid var(--black); font-family: 'Fredoka', sans-serif; text-transform: uppercase; font-size: 0.9rem; }
+.data-table td { padding: 1.2rem 1rem; border-bottom: 1px solid var(--mid-grey); font-size: 0.95rem; font-weight: 500; }
+
+.prog-bar { width: 100%; height: 24px; background: #eee; border-radius: 12px; position: relative; overflow: hidden; border: 1px solid #ddd; }
+.prog-fill { height: 100%; background: var(--yellow); transition: 0.4s; }
+.prog-bar span { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 0.75rem; font-weight: 800; }
+
+.btn-del { background: #fee; color: #f44; border: 2px solid #fcc; padding: 0.5rem; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; }
+.btn-del:hover { background: #f44; color: var(--white); border-color: #f44; transform: scale(1.1); }
+
+.no-data { text-align: center; padding: 4rem; color: #ccc; font-weight: 700; font-size: 1.2rem; }
 
 /* ── NAVBAR ── */
 nav {
