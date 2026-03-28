@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
+import LiquidText from './components/ui/liquid-text';
 import { 
   Menu, X, Phone, Mail, MapPin, Linkedin, ArrowRight, 
   Construction, Ruler, DraftingCompass, Building2, HardHat, Lightbulb, Globe, CheckCircle2, Play, Quote, Trash2, Calendar, User, MessageCircle, Users, Briefcase, Plus
@@ -480,7 +481,14 @@ const App = () => {
         <div className="hero-content">
           <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="hero-text">
             <div className="hero-tag">{data.hero.tag}</div>
-            <h1 className="hero-heading"><span className="line-highlight">{data.hero.h1}</span><br/><span className="line-outline">{data.hero.h2}</span></h1>
+            <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '2rem', marginTop: '1rem', zIndex: 10, position: 'relative' }}>
+              <div className="line-highlight" style={{ padding: '0 1rem', display: 'inline-block', width: 'fit-content', borderRadius: '15px' }}>
+                <LiquidText text={data.hero.h1} fontSize={140} color="var(--black)" style={{ minWidth: '280px', width: '60vw', maxWidth: '800px', height: 'clamp(80px, 15vw, 150px)', margin: '-20px 0' }} />
+              </div>
+              <div className="line-outline" style={{ background: 'transparent', boxShadow: 'none', padding: '0 1rem' }}>
+                <LiquidText text={data.hero.h2} fontSize={140} color="transparent-outline" style={{ minWidth: '280px', width: '60vw', maxWidth: '800px', height: 'clamp(80px, 15vw, 150px)', margin: '-20px 0' }} />
+              </div>
+            </div>
             <p className="hero-sub">{data.hero.sub}</p>
             <div className="hero-btns"><a href="#contact" className="btn-primary">{t('hero_btn1')}</a><a href="#experience" className="btn-outline">{t('hero_btn2')}</a></div>
             <div className="hero-stats">{data.hero.stats.map((stat, i) => (<div key={i} className="stat"><span className="stat-num">{stat.num}<span>{stat.span}</span></span><span className="stat-label">{stat.label}</span></div>))}</div>
