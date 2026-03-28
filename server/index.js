@@ -115,12 +115,16 @@ const seedData = {
 // API Routes
 app.get('/api/portfolio', async (req, res) => {
   try {
-    let portfolio = await Portfolio.findOne();
-    if (!portfolio) {
-      portfolio = new Portfolio(seedData);
-      await portfolio.save();
+    if (mongoose.connection.readyState === 1) {
+      let portfolio = await Portfolio.findOne();
+      if (!portfolio) {
+        portfolio = new Portfolio(seedData);
+        await portfolio.save();
+      }
+      res.json(portfolio);
+    } else {
+      res.json(seedData);
     }
-    res.json(portfolio);
   } catch (err) {
     res.status(500).json({ error: 'Server Error' });
   }
@@ -142,8 +146,12 @@ app.get('/api/messages', async (req, res) => {
 // Worker Endpoints
 app.get('/api/workers', async (req, res) => {
   try {
-    const workers = await Worker.find();
-    res.json(workers);
+    if (mongoose.connection.readyState === 1) {
+      const workers = await Worker.find();
+      res.json(workers);
+    } else {
+      res.json([]);
+    }
   } catch (err) { res.status(500).json({ error: 'Error fetching workers' }); }
 });
 
@@ -165,8 +173,12 @@ app.delete('/api/workers/:id', async (req, res) => {
 // Project Management Endpoints
 app.get('/api/projects-list', async (req, res) => {
   try {
-    const projects = await Project.find();
-    res.json(projects);
+    if (mongoose.connection.readyState === 1) {
+      const projects = await Project.find();
+      res.json(projects);
+    } else {
+      res.json([]);
+    }
   } catch (err) { res.status(500).json({ error: 'Error fetching projects' }); }
 });
 
