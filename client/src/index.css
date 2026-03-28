@@ -50,6 +50,12 @@ section {
   padding: 100px 5vw;
 }
 
+@media (max-width: 768px) {
+  section {
+    padding: 60px 1.5rem;
+  }
+}
+
 a {
   text-decoration: none;
   color: inherit;

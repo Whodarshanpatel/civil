@@ -136,7 +136,7 @@ app.get('/api/messages', async (req, res) => {
       const messages = await Contact.find().sort({ date: -1 });
       res.json(messages);
     } else {
-      res.json([]);
+      res.json([...messages].sort((a, b) => new Date(b.date) - new Date(a.date)));
     }
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch messages' });
